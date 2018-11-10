@@ -38,11 +38,14 @@ public class ReportJinq implements IReportGenerator {
 	@Override
 	public List<String> getBestClientsEmails(String agency, int rankingSize) {
 		return helper.execute(Account.class, streams ->
-			streams
-				.where(account -> account.getAgency().equals(agency))
-				.sumDouble(account -> account.getBalance())
-				
-		);
+		streams
+		.where(account -> account.getAgency().equals(agency))
+		.sumDouble(account -> account.getBalance())
+		.select(Account::getClient().getEmail())
+		.limit(rankingSize)
+		.toList()
+
+				);
 
 	}
 }

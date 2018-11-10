@@ -31,17 +31,24 @@ public class ReportQuerydsl implements IReportGenerator {
 
 		return helper.execute(query ->
 		query
-			.select(account.balance.sum())
-			.where(account.client.email.eq(email))
-			.groupBy(account.balance)
-			.fetchOne()
-		);
+		.select(account.balance.sum())
+		.where(account.client.email.eq(email))
+		.groupBy(account.balance)
+		.fetchOne()
+				);
 	}
-
-
 
 	@Override
 	public List<String> getBestClientsEmails(String agency, int rankingSize) {
-		throw new UnsupportedOperationException("Not implemented yet.");
+		QAccount account = QAccount.account;
+
+		return helper.execute(query ->
+		query
+		.select(account.client.email)
+		.where(account.agency.eq(agency))
+		.orderBy(account.balance.sum().asc())
+		.limit(rankingSize)
+		.fetch()
+				);
 	}
 }
